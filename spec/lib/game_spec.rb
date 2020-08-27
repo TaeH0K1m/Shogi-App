@@ -78,7 +78,11 @@ describe "Game" do
           expect(board).to eq hardcopy_board
         end
 
-        it 'does it move' do
+        it 'gets player' do
+            expect('+KI'.get_player).to eq 'black'
+           end
+
+        it 'does FU move' do
           game = Game.new
           board = game.setup()
           valid_move = game.valid_move?(origin: 27, piece: 'FU', player: 'black', dest: 26)
@@ -86,7 +90,7 @@ describe "Game" do
           expect(valid_move).to eq true
         end
 
-        it 'does it move' do
+        it 'does FU not move' do
           game = Game.new
           board = game.setup()
           game.move_piece(origin: 29, piece: 'KE', player: 'black', dest: 26)
@@ -95,9 +99,33 @@ describe "Game" do
           expect(valid_move).to eq false
         end
 
-        it 'gets player' do
-         expect('+KI'.get_player).to eq 'black'
-        end
+        it 'does KY move' do
+            game = Game.new
+            board = game.setup()
+            game.move_piece(origin: 97, piece: 'FU', player: 'black', dest: 86)
+            # game.print_board
+            valid_move = game.valid_move?(origin: 99, piece: 'KY', player: 'black', dest: 93)
+  
+            expect(valid_move).to eq true
+          end
+  
+          it 'does KY not move' do
+            game = Game.new
+            board = game.setup()
+            valid_move = game.valid_move?(origin: 99, piece: 'KY', player: 'black', dest: 97)
+  
+            expect(valid_move).to eq false
+          end
+
+          it 'does KY not move (not on the same line)' do
+            game = Game.new
+            board = game.setup()
+            valid_move = game.valid_move?(origin: 99, piece: 'KY', player: 'black', dest: 66)
+  
+            expect(valid_move).to eq false
+          end
+
+        
     #    it "test 2" do
     #         game = Game.new
     #         game.move_piece(square: '99', piece: 'FU')
