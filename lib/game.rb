@@ -57,14 +57,17 @@ class Game
         # check if piece can make that move
         # check if path is clear
 
-        legal_move(origin: origin, piece: piece, player: player, dest: dest) && 
+        legal_move(origin: origin, piece: piece, player: player, dest: dest) &&
         path_clear(origin: origin, piece: piece, player: player, dest: dest)
     end
 
     def legal_move(origin: , piece: , player: , dest: )
-        pos_change = get_pos_change(origin: origin, dest: dest) 
+        pos_change = get_pos_change(origin: origin, dest: dest)
         dx = 0
         dy = 1
+
+        # Check no movements
+        return false if origin == dest
 
         case piece
         when 'FU'
@@ -83,6 +86,30 @@ class Game
                 pos_change[dx] == 0 &&
                 pos_change[dy] > 0
             end
+        when 'KE'
+            if player == 'black'
+                (pos_change[dx] == 1 || pos_change[dx] == -1 ) &&
+                pos_change[dy] == -2
+            else # white
+                (pos_change[dx] == 1 || pos_change[dx] == -1 ) &&
+                pos_change[dy] == 2
+            end
+        when 'GI'
+            valid_pos = [
+                { x: -1, y: -1 },
+                { x:  0, y: -1 },
+                { x:  1, y: -1 },
+                { x: -1, y: 1 },
+                { x:  1, y: 1 },
+            ]
+
+            if player == 'black'
+                valid_pos.include?({ x: pos_change[dx], y: pos_change[dy] })
+            else # white
+                valid_pos.include?({ x: -pos_change[dx], y: -pos_change[dy] })
+            end
+        when 'KA'
+            pos_change[dx].abs == pos_change[dy].abs
         else
         end
     end
@@ -95,8 +122,9 @@ class Game
         piece_on_dest = @board[to_idx(square: dest)]
 
         case piece
-        when 'FU'
-            piece_on_dest == empty_square || player != piece_on_dest.get_player
+        when 'FU', 'KE', 'GI'
+            # piece_on_dest == empty_square ||
+            player != piece_on_dest.get_player
         when 'KY'
             pos_change = get_pos_change(origin: origin, dest: dest)
             pos_change[dy].abs.times { |index|
@@ -118,7 +146,26 @@ class Game
                     return false if piece_on_square != empty_square
                 end
             }
-            true
+        when 'KA'
+            pos_change = get_pos_change(origin: origin, dest: dest)
+            # p "pos_change: #{pos_change}"
+
+            # get_direction
+            step = pos_change.map { |pos| pos/pos.abs }
+            current_pos = [origin.to_s[dx].to_i, origin.to_s[dy].to_i]
+
+            pos_change[dx].abs.times { |index|
+                current_pos = [(step[dx] + current_pos[dx]),  (step[dy] + current_pos[dy])]
+                x_pos = current_pos[dx]
+                y_pos = current_pos[dy]
+                piece_on_square = @board[to_idx(square: "#{x_pos}#{y_pos}".to_i)]
+
+                if current_pos.join().to_i == dest
+                    return piece_on_dest == empty_square || player != piece_on_dest.get_player
+                else
+                    return false if piece_on_square != empty_square 
+                end
+            }
         else
         end
     end
