@@ -110,7 +110,12 @@ class Game
             end
         when 'KA'
             pos_change[dx].abs == pos_change[dy].abs
-        else
+        when 'HI'
+            pos_change[dx].zero? ^ pos_change[dy].zero?
+        when 'OU'
+            pos_change[dx].abs <= 1 &&
+            pos_change[dy].abs <= 1 &&
+            !(pos_change[dx].abs + pos_change[dy].abs).zero?
         end
     end
 
@@ -122,7 +127,7 @@ class Game
         piece_on_dest = @board[to_idx(square: dest)]
 
         case piece
-        when 'FU', 'KE', 'GI'
+        when 'FU', 'KE', 'GI', 'OU'
             # piece_on_dest == empty_square ||
             player != piece_on_dest.get_player
         when 'KY'
@@ -163,10 +168,31 @@ class Game
                 if current_pos.join().to_i == dest
                     return piece_on_dest == empty_square || player != piece_on_dest.get_player
                 else
-                    return false if piece_on_square != empty_square 
+                    return false if piece_on_square != empty_square
                 end
             }
-        else
+        when 'HI'
+            # move_x = pos_change[dx]
+            # move_y = pos_change[dy]
+            pos_change = get_pos_change(origin: origin, dest: dest)
+
+            target = pos_change[dx].zero? ? pos_change[dy] : pos_change[dx]
+            step = pos_change[dx].zero? ? [0, pos_change[dy]/pos_change[dy].abs] : [pos_change[dx]/pos_change[dx].abs, 0]
+
+            current_pos = [origin.to_s[dx].to_i, origin.to_s[dy].to_i]
+
+            target.abs.times { |index|
+                current_pos = [(step[dx] + current_pos[dx]),  (step[dy] + current_pos[dy])]
+                x_pos = current_pos[dx]
+                y_pos = current_pos[dy]
+                piece_on_square = @board[to_idx(square: "#{x_pos}#{y_pos}".to_i)]
+
+                if current_pos.join().to_i == dest
+                    return piece_on_dest == empty_square || player != piece_on_dest.get_player
+                else
+                    return false if piece_on_square != empty_square
+                end
+            }
         end
     end
 

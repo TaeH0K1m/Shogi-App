@@ -203,31 +203,65 @@ describe "Game" do
             end
           end
 
-    #    it "test 2" do
-    #         game = Game.new
-    #         game.move_piece(square: '99', piece: 'FU')
-    #         expect(game.is_occupy(square: '99', piece: 'FU')).to eq true
-    #    end
+          # Rook (HI)
+          [53, 56, 54, 65, 75, 85, 95, 45, 35, 25, 15].each do |pos|
+            it "does HI move #{pos}" do
+              game = Game.new
+              board = game.setup()
+              game.move_piece(origin: 28, piece: 'HI', player: 'black', dest: 55)
+              # game.print_board
+              valid_move = game.valid_move?(origin: 55, piece: 'HI', player: 'black', dest: pos)
 
-    #    it "test 3" do
-    #         game = Game.new
-    #         expect(Game.to_idx(square: 91)).to eq 0
-    #    end
+              expect(valid_move).to eq true
+            end
+          end
 
-    #    it "test 4" do
-    #         game = Game.new
-    #         expect(Game.to_idx(square: 76)).to eq 47
-    #    end
+          [52, 51, 57, 58, 59].each do |pos|
+            it "does HI not move #{pos}" do
+              game = Game.new
+              board = game.setup()
+              game.move_piece(origin: 28, piece: 'HI', player: 'black', dest: 55)
+              # game.print_board
+              valid_move = game.valid_move?(origin: 55, piece: 'HI', player: 'black', dest: pos)
 
-    #     it "test 5" do
-    #         game = Game.new
-    #         expect(Game.to_idx(square: 24)).to eq 34
-    #     end
+              expect(valid_move).to eq false
+            end
+          end
 
-    #     it "test 6" do
-    #         game = Game.new
-    #         expect(game.move_piece(square: 91, piece: 'FU')).to eq true
-    #     end
+          [88, 98].each do |pos|
+            it "does HI not move #{pos}" do
+              game = Game.new
+              board = game.setup()
+              # game.print_board
+              valid_move = game.valid_move?(origin: 28, piece: 'HI', player: 'black', dest: pos)
 
+              expect(valid_move).to eq false
+            end
+          end
+
+          # King (OU)
+          [64, 54, 44, 45, 46, 56, 66, 65].each do |pos|
+            it "does OU move #{pos}" do
+              game = Game.new
+              board = game.setup()
+              game.move_piece(origin: 59, piece: 'OU', player: 'black', dest: 55)
+              # game.print_board
+              valid_move = game.valid_move?(origin: 55, piece: 'OU', player: 'black', dest: pos)
+
+              expect(valid_move).to eq true
+            end
+          end
+
+          [67, 57, 47, 69, 49].each do |pos|
+            it "does OU not move #{pos}" do
+              game = Game.new
+              board = game.setup()
+              game.move_piece(origin: 59, piece: 'OU', player: 'black', dest: 58)
+              # game.print_board
+              valid_move = game.valid_move?(origin: 58, piece: 'OU', player: 'black', dest: pos)
+
+              expect(valid_move).to eq false
+            end
+          end
     end
  end
