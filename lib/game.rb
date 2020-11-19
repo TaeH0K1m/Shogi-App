@@ -16,17 +16,43 @@ module GameHelper
     def get_player
         self[0] == '+' ? 'black' : 'white'
     end
+
+    def get_piece
+        self[1..2]
+    end
 end
 
 class Game
-    attr_accessor :board, :turn
+    attr_accessor :board, :turn, :hands
 
     def initialize
+        @turn = 'black'
         @board = %w[-]*80
+        @hands = {
+            black: {
+                OU: 0,
+                HI: 0,
+                KA: 0,
+                KI: 0,
+                GI: 0,
+                KE: 0,
+                KY: 0,
+                FU: 0
+            }, 
+            white: {
+                OU: 0,
+                HI: 0,
+                KA: 0,
+                KI: 0,
+                GI: 0,
+                KE: 0,
+                KY: 0,
+                FU: 0
+            },
+        }
     end
 
     def setup
-        @turn = 'black'
         @board = [
             '-KY', '-KE', '-GI', '-KI', '-OU', '-KI', '-GI', '-KE', '-KY',
             '   ', '-HI', '   ', '   ', '   ', '   ', '   ', '-KA', '   ',
@@ -43,6 +69,29 @@ class Game
     def check_position(origin:, piece:, player:)
         turn = player == 'black' ? '+' : '-'
         board[to_idx(square: origin)] == "#{turn}#{piece}"
+    end
+
+    def move(origin: , piece: , player: , dest: )
+        is_success = valid_move?(origin: origin, piece: piece, player: player, dest: dest)
+        piece_on_dest = @board[to_idx(square: dest)]
+
+        if is_success
+            capture_piece(piece: piece_on_dest) if player != piece_on_dest.get_player && piece_on_dest != '   '
+            move_piece(origin: origin, piece: piece, player: player, dest: dest)
+        end
+
+        is_success
+    end
+
+    def capture_piece(piece:)
+        player = piece.get_player.to_sym
+        piece = piece.get_piece.to_sym
+
+        if player == :black
+            @hands[:white][piece] += 1
+        else
+            @hands[:black][piece] += 1
+        end
     end
 
     def move_piece(origin: , piece: , player: , dest: )
