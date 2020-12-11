@@ -38,7 +38,7 @@ class Game
                 KE: 0,
                 KY: 0,
                 FU: 0
-            }, 
+            },
             white: {
                 OU: 0,
                 HI: 0,
@@ -83,6 +83,39 @@ class Game
         is_success
     end
 
+    def drop(origin: , piece: , player: , dest: )
+        if check_player_hand(player: player, piece: piece) &&
+             valid_drop?(origin: origin, piece: piece, player: player, dest: dest)
+
+            @hands[player.to_sym][piece.to_sym] -= 1
+            move_piece(origin: origin, piece: piece, player: player, dest: dest)
+            return true
+        end
+        return false
+    end
+
+    def check_player_hand(player:, piece:)
+        @hands[player.to_sym][piece.to_sym] > 0
+    end
+
+    def valid_drop?(origin:, player:, piece:, dest:)
+        piece_on_dest = @board[to_idx(square: dest)]
+        idx = to_idx(square: dest)
+
+        is_dest_empty = piece_on_dest == '   ' if origin == '00'
+
+        last_row_legal =
+            case piece
+            when 'FU'
+                idx > 9
+            when 'KE'
+                idx > 18
+            else
+                true
+            end
+        return is_dest_empty && last_row_legal
+    end
+
     def capture_piece(piece:)
         player = piece.get_player.to_sym
         piece = piece.get_piece.to_sym
@@ -95,8 +128,9 @@ class Game
     end
 
     def move_piece(origin: , piece: , player: , dest: )
-
-        @board[to_idx(square: origin)] = '   '
+        if origin != '00'
+            @board[to_idx(square: origin)] = '   '
+        end
 
         turn = player == 'black' ? '+' : '-'
         @board[to_idx(square: dest)] = "#{turn}#{piece}"
@@ -105,7 +139,6 @@ class Game
     def valid_move?(origin: , piece: , player: , dest: )
         # check if piece can make that move
         # check if path is clear
-
         legal_move(origin: origin, piece: piece, player: player, dest: dest) &&
         path_clear(origin: origin, piece: piece, player: player, dest: dest)
     end
@@ -114,6 +147,7 @@ class Game
         pos_change = get_pos_change(origin: origin, dest: dest)
         dx = 0
         dy = 1
+        piece_on_dest = @board[to_idx(square: dest)]
 
         # Check no movements
         return false if origin == dest
@@ -177,7 +211,7 @@ class Game
 
         case piece
         when 'FU', 'KE', 'GI', 'OU'
-            # piece_on_dest == empty_square ||
+            piece_on_dest == empty_square ||
             player != piece_on_dest.get_player
         when 'KY'
             pos_change = get_pos_change(origin: origin, dest: dest)

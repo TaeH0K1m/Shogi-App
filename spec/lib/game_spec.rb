@@ -283,5 +283,62 @@ describe "Game" do
 
           expect(game.hands[:black][:FU]).to eq 1
         end
+
+        context 'when dropping' do
+         # in hand can drop
+         # not in hand and can't drop
+         # in hand but destination doesn't allow
+          # destination is occuppied
+          # pawn is in last row
+          # horse is in 2nd last row
+          let(:game) { Game.new }
+          let(:board) { game.setup() }
+
+          it 'is in hand' do
+            board
+            game.move_piece(origin: 87, piece: 'FU', player: 'black', dest: 84)
+
+            game.move(origin: 84, piece: 'FU', player: 'black', dest: 83)
+
+            is_dropped = game.drop(origin: '00', piece: 'FU', player: 'black', dest: 55)
+
+            expect(is_dropped).to eq true
+            expect(game.hands[:black][:FU]).to eq 0
+          end
+
+          it 'is not in hand' do
+            board
+            is_dropped = game.drop(origin: '00', piece: 'FU', player: 'black', dest: 55)
+
+            expect(is_dropped).to eq false
+          end
+
+          it 'is in hand but destination is occuppied' do
+            board
+            game.move_piece(origin: 87, piece: 'FU', player: 'black', dest: 84)
+
+            game.move(origin: 84, piece: 'FU', player: 'black', dest: 83)
+
+            is_dropped = game.drop(origin: '00', piece: 'FU', player: 'black', dest: 51)
+            expect(is_dropped).to eq false
+          end
+
+          it 'pawn dropping on last row' do
+            board
+            game.move_piece(origin: 31, piece: 'GI', player: 'white', dest: 42)
+            game.hands[:black][:FU] += 1
+
+            is_dropped = game.drop(origin: '00', piece: 'FU', player: 'black', dest: 31)
+            expect(is_dropped).to eq false
+          end
+
+          it 'Knight dropping on 2nd last row' do
+            board
+            game.hands[:black][:KE] += 1
+
+            is_dropped = game.drop(origin: '00', piece: 'KE', player: 'black', dest: 32)
+            expect(is_dropped).to eq false
+          end
+        end
     end
  end
