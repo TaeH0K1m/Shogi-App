@@ -340,5 +340,37 @@ describe "Game" do
             expect(is_dropped).to eq false
           end
         end
+
+        context 'when promoting' do
+          let(:game) { Game.new }
+
+          # TO (Promoted Pawn), NY (P-Lance), NK (P-Knight), NG (P-Silver)
+          [['FU', 'TO'], ['KY', 'NY'], ['KE', 'NK'], ['GI', 'NG']].each do |piece, promoted_piece|
+
+            it "checks if the #{piece} can promote" do
+              # from outside to inside
+              expect(game.can_promote?(origin: 56, player: 'black', dest: 52)).to eq true
+
+              # from inside to outside
+              expect(game.can_promote?(origin: 52, player: 'black', dest: 56)).to eq true
+
+              # withtin inside
+              expect(game.can_promote?(origin: 52, player: 'black', dest: 51)).to eq true
+            end
+
+            it "checks if the #{piece} can not promote" do
+              expect(game.can_promote?(origin: 56, player: 'black', dest: 59)).to eq false
+            end
+
+            it "promotes #{piece} to #{promoted_piece}" do
+              game.board[to_idx(square: 54)] = "+#{piece}"
+              # game.print_board
+              game.move_piece(origin: 54, piece: piece, player: 'black', dest: 53)
+              # game.print_board
+              expect(game.board[to_idx(square: 53)]).to eq "+#{promoted_piece}"
+            end
+          end
+          
+        end
     end
  end

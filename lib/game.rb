@@ -25,6 +25,17 @@ end
 class Game
     attr_accessor :board, :turn, :hands
 
+    BLACK_TERRITORY = [*54..80]
+    WHITE_TERRITORY = [*0..26]
+    PROMOTION = {
+        'FU' => 'TO',
+        'KA' => 'UM',
+        'HI' => 'RY',
+        'KY' => 'NY',
+        'KE' => 'NK',
+        'GI' => 'NG'
+    }
+
     def initialize
         @turn = 'black'
         @board = %w[-]*80
@@ -133,7 +144,23 @@ class Game
         end
 
         turn = player == 'black' ? '+' : '-'
+
+        if can_promote?(origin: origin, player: player, dest: dest)
+            # puts 'Do you want to promote? (y/n)'
+            # answer = gets
+            answer = 'y'
+            piece = answer == 'y' ? PROMOTION[piece] : piece
+        end
+
         @board[to_idx(square: dest)] = "#{turn}#{piece}"
+    end
+
+    def can_promote?(origin:, player:, dest:)
+        if player == 'black'
+            WHITE_TERRITORY.include?(to_idx(square: origin)) || WHITE_TERRITORY.include?(to_idx(square: dest))
+        else # 'whiwte'
+            BLACK_TERRITORY.include?(to_idx(square: origin)) || BLACK_TERRITORY.include?(to_idx(square: dest))
+        end
     end
 
     def valid_move?(origin: , piece: , player: , dest: )

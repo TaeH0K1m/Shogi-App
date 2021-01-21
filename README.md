@@ -9,5 +9,7 @@
     - [x] Check if destination is empty / legal
 # Other things
   - [ ] Promotion
+    - [x] TO (Promoted Pawn), NY (P-Lance), NK (P-Knight), NG (P-Silver)
+    - [ ] UM (P-Bishop), RY (P-Rook)
   - [ ] Winning Condition
   - [ ] Terminal Output/Prompt/Interface
