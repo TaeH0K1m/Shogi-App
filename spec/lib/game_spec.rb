@@ -79,8 +79,8 @@ describe "Game" do
         end
 
         it 'gets player' do
-            expect('+KI'.get_player).to eq 'black'
-           end
+          expect('+KI'.get_player).to eq 'black'
+        end
 
         it 'does FU move' do
           game = Game.new
@@ -167,6 +167,27 @@ describe "Game" do
           end
         end
 
+        [64, 54, 44, 65, 45, 56].each do |pos|
+          it 'KI moves' do
+            game = Game.new
+            board = game.setup()
+            game.move_piece(origin: 69, piece: 'KI', player: 'black', dest: 55)
+            valid_move = game.valid_move?(origin: 55, piece: 'KI', player: 'black', dest: pos)
+
+            expect(valid_move).to eq true
+          end
+        end
+
+        [66, 46].each do |pos|
+          it 'KI does not move' do
+            game = Game.new
+            board = game.setup()
+            game.move_piece(origin: 69, piece: 'KI', player: 'black', dest: 55)
+            valid_move = game.valid_move?(origin: 55, piece: 'KI', player: 'black', dest: pos)
+
+            expect(valid_move).to eq false
+          end
+        end
         [45, 34, 65, 74].each do |pos|
           it "does KA move #{pos}" do
             game = Game.new
@@ -345,7 +366,7 @@ describe "Game" do
           let(:game) { Game.new }
 
           # TO (Promoted Pawn), NY (P-Lance), NK (P-Knight), NG (P-Silver)
-          [['FU', 'TO'], ['KY', 'NY'], ['KE', 'NK'], ['GI', 'NG']].each do |piece, promoted_piece|
+          [['FU', 'TO'], ['KY', 'NY'], ['KE', 'NK'], ['GI', 'NG'], ['KA', 'UM'], ['HI', 'RY']].each do |piece, promoted_piece|
 
             it "checks if the #{piece} can promote" do
               # from outside to inside
@@ -354,7 +375,7 @@ describe "Game" do
               # from inside to outside
               expect(game.can_promote?(origin: 52, player: 'black', dest: 56)).to eq true
 
-              # withtin inside
+              # within inside
               expect(game.can_promote?(origin: 52, player: 'black', dest: 51)).to eq true
             end
 
@@ -370,7 +391,20 @@ describe "Game" do
               expect(game.board[to_idx(square: 53)]).to eq "+#{promoted_piece}"
             end
           end
-          
+=begin
+          %w[ TO NY NK NG ].each do |piece|
+            it "#{piece} moves" do
+              # game.board[to_idx(square: 54)] = "+#{piece}"
+              # game.valid_move?(origin: origin, piece: piece, player: 'black', dest: 55)
+            end
+          end
+
+          %w[ UM RY ].each do |piece|
+            it "#{piece} moves" do
+
+            end
+          end
+=end
         end
     end
  end

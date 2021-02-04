@@ -11,5 +11,8 @@
   - [ ] Promotion
     - [x] TO (Promoted Pawn), NY (P-Lance), NK (P-Knight), NG (P-Silver)
     - [ ] UM (P-Bishop), RY (P-Rook)
+  - [ ] Record Reader - (KIFU)
+    - [ ] Check if we can actually read document before moving on to next step
+    - [ ] KIFU Format [CSA format](https://shogidb2.com/latest)
   - [ ] Winning Condition
   - [ ] Terminal Output/Prompt/Interface

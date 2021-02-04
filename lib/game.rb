@@ -218,6 +218,21 @@ class Game
             else # white
                 valid_pos.include?({ x: -pos_change[dx], y: -pos_change[dy] })
             end
+        when 'KI'
+            valid_pos = [
+                { x:  1, y: -1 }, # top left
+                { x: -1, y: -1 }, # top right
+                { x:  0, y: -1 }, # top middle
+                { x:  1, y:  0 }, # middle left
+                { x: -1, y:  0 }, # middle right
+                { x:  0, y:  1 }, # bottom middle
+            ]
+
+            if player == 'black'
+                valid_pos.include?({ x: pos_change[dx], y: pos_change[dy] })
+            else # white
+                valid_pos.include?({ x: -pos_change[dx], y: -pos_change[dy] })
+            end
         when 'KA'
             pos_change[dx].abs == pos_change[dy].abs
         when 'HI'
@@ -237,7 +252,7 @@ class Game
         piece_on_dest = @board[to_idx(square: dest)]
 
         case piece
-        when 'FU', 'KE', 'GI', 'OU'
+        when 'FU', 'KE', 'GI', 'KI', 'OU'
             piece_on_dest == empty_square ||
             player != piece_on_dest.get_player
         when 'KY'
