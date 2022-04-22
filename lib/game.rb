@@ -218,7 +218,7 @@ class Game
             else # white
                 valid_pos.include?({ x: -pos_change[dx], y: -pos_change[dy] })
             end
-        when 'KI'
+        when 'KI', 'TO', 'NY', 'NK', 'NG'
             valid_pos = [
                 { x:  1, y: -1 }, # top left
                 { x: -1, y: -1 }, # top right
@@ -252,7 +252,7 @@ class Game
         piece_on_dest = @board[to_idx(square: dest)]
 
         case piece
-        when 'FU', 'KE', 'GI', 'KI', 'OU'
+        when 'FU', 'KE', 'GI', 'KI', 'OU', 'TO', 'NY', 'NK', 'NG'
             piece_on_dest == empty_square ||
             player != piece_on_dest.get_player
         when 'KY'

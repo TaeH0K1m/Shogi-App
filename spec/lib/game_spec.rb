@@ -188,6 +188,7 @@ describe "Game" do
             expect(valid_move).to eq false
           end
         end
+
         [45, 34, 65, 74].each do |pos|
           it "does KA move #{pos}" do
             game = Game.new
@@ -365,7 +366,7 @@ describe "Game" do
         context 'when promoting' do
           let(:game) { Game.new }
 
-          # TO (Promoted Pawn), NY (P-Lance), NK (P-Knight), NG (P-Silver)
+          # TO (Promoted Pawn), NY (P-Lance), NK (P-Knight), NG (P-Silver), RY (Promoted Rock), UM (Promoted Bishop)
           [['FU', 'TO'], ['KY', 'NY'], ['KE', 'NK'], ['GI', 'NG'], ['KA', 'UM'], ['HI', 'RY']].each do |piece, promoted_piece|
 
             it "checks if the #{piece} can promote" do
@@ -390,21 +391,36 @@ describe "Game" do
               # game.print_board
               expect(game.board[to_idx(square: 53)]).to eq "+#{promoted_piece}"
             end
-          end
-=begin
+          end      
+
           %w[ TO NY NK NG ].each do |piece|
-            it "#{piece} moves" do
-              # game.board[to_idx(square: 54)] = "+#{piece}"
-              # game.valid_move?(origin: origin, piece: piece, player: 'black', dest: 55)
-            end
-          end
+            [64, 54, 44, 65, 45, 56].each do |pos|
+              it "#{piece} moves" do
+                board = game.setup()
+                game.move_piece(origin: 69, piece: piece, player: 'black', dest: 55)
+                valid_move = game.valid_move?(origin: 55, piece: piece, player: 'black', dest: pos)
 
-          %w[ UM RY ].each do |piece|
-            it "#{piece} moves" do
-
+                expect(valid_move).to eq true
+              end
             end
-          end
-=end
+
+            [66, 46].each do |pos|
+              it "#{piece} does not moves" do
+                board = game.setup()
+                game.move_piece(origin: 69, piece: piece, player: 'black', dest: 55)
+                valid_move = game.valid_move?(origin: 55, piece: piece, player: 'black', dest: pos)
+  
+                expect(valid_move).to eq false
+              end
+            end
+          end 
+
+          # %w[ UM RY ].each do |piece|
+          #   it "#{piece} moves" do
+
+          #   end
+          # end
+
         end
     end
  end
